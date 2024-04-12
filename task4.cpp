@@ -1,72 +1,96 @@
-/*Build a simple console-based to-do list manager that allows users to add, view, and delete tasks.*/
+/* Build a simple console-based to-do list manager that allows users to add, view, and delete tasks */
 
 #include <iostream>
-#include <vector>
 #include <string>
-using namespace std;
-void displayMenu() {
-    cout << "\n== TO-DO LIST MANAGER ==" << endl;
-    cout << "1. Add Task" << endl;
-    cout << "2. View Tasks" << endl;
-    cout << "3. Delete Task" << endl;
-    cout << "4. Exit" << endl;
-    cout << "Enter your choice: ";
+
+using namespace std ;
+
+const int MAX_TASKS = 10 ;
+
+struct Task 
+{
+    string description;
+    bool completed;
+} ;
+
+Task tasks[MAX_TASKS];
+int numTasks = 0;
+
+void addTask() 
+{
+    if (numTasks < MAX_TASKS) {
+        cout << "Enter task description: ";
+        cin.ignore();
+        getline(cin, tasks[numTasks].description);
+        tasks[numTasks].completed = false;
+        numTasks++;
+        cout << "Task added successfully.\n";
+       } else {
+        cout << "Maximum number of tasks reached.\n";
+       }
 }
-void addTask(vector<string>& tasks) {
-    string task;
-    cout << "Enter task to add: ";
-    getline(cin.ignore(), task);
-    tasks.push_back(task);
-    cout << "Task added successfully!" << endl;
-}
-void viewTasks(const vector<string>& tasks) {
-    if (tasks.empty()) {
-        cout << "No tasks available." << endl;
-    } else {
-        cout << "\nTasks:" << endl;
-        for (size_t i = 0; i < tasks.size(); ++i) {
-            cout << i  + 1 << ". " << tasks[i] << endl;
-        }
+
+void viewTasks() 
+{
+    cout << "Tasks:\n";
+    for (int i = 0; i < numTasks; i++)
+     {
+        cout << i + 1 << ". " << tasks[i].description;
+        if (tasks[i].completed) {
+            cout << " (Completed)";
+      }
+        cout << endl;
     }
 }
-void deleteTask(vector<string>& tasks) {
-    viewTasks(tasks);
-    if (!tasks.empty()) {
+
+void deleteTask()
+ {
+    if (numTasks > 0) {
         cout << "Enter task number to delete: ";
         int taskNumber;
         cin >> taskNumber;
-        if (taskNumber >= 1 && taskNumber <= static_cast<int>(tasks.size())) {
-            tasks.erase(tasks.begin() + taskNumber - 1);
-            cout << "Task deleted successfully!" << endl;
+        if (taskNumber > 0 && taskNumber <= numTasks) {
+            for (int i = taskNumber - 1; i < numTasks - 1; i++) {
+                tasks[i] = tasks[i + 1];
+            }
+            numTasks--;
+            cout << "Task deleted successfully.\n";
         } else {
-            cout << "Invalid task number." << endl;
+            cout << "Invalid task number.\n";
         }
+    } else {
+        cout << "No tasks to delete.\n";
     }
 }
-int main() {
-    vector<string> tasks;
+int main()
+ {
     int choice;
     do {
-        displayMenu();
+        cout << "\n=.... To-Do List Manager ....=\n";
+        cout << "1. Add Task_\n";
+        cout << "2. View Tasks_\n";
+        cout << "3. Delete Task_\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: : ";
         cin >> choice;
-        cin.ignore(); // Clear input buffer
+
         switch (choice) {
             case 1:
-                addTask(tasks);
+                addTask();
                 break;
             case 2:
-                viewTasks(tasks);
+                viewTasks();
                 break;
             case 3:
-                deleteTask(tasks);
+                deleteTask();
                 break;
             case 4:
-                cout << "Exiting program. Goodbye!" << endl;
+                cout << "Exiting program.\n";
                 break;
             default:
-                cout << "Invalid choice. Please try again." << endl;
-                break;
+                cout << "Invalid choice.\n";
         }
     } while (choice != 4);
+
     return 0;
 }
